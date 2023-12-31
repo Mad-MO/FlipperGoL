@@ -5,7 +5,16 @@ static volatile int exit_app;
 
 static void my_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
-    canvas_draw_str(canvas, 10, 10, "Game of Life"); // Write on display
+    canvas_draw_str(canvas, 20, 20, "Domo's Game of Life"); // Write on display
+
+    canvas_draw_dot(canvas, 0, 0);
+    canvas_draw_dot(canvas, 1, 1);
+    canvas_draw_dot(canvas, 126, 62);
+    canvas_draw_dot(canvas, 127, 63);
+
+    canvas_draw_rframe(canvas, 0, 0, 10, 10, 2);
+    canvas_draw_rframe(canvas, 59, 27, 10, 10, 2);
+    canvas_draw_rframe(canvas, 118, 54, 10, 10, 2);
 }
 
 static void my_input_callback(InputEvent* input_event, void* context) {
