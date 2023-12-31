@@ -14,7 +14,7 @@ static void my_input_callback(InputEvent* input_event, void* context) {
         exit_app = 1;
 }
 
-int32_t domogameoflife_app(void* p) {
+int32_t domogol_app(void* p) {
     Gui* gui = furi_record_open(RECORD_GUI);
     ViewPort* view_port = view_port_alloc();
     void* my_context = NULL;
