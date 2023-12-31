@@ -26,8 +26,12 @@ int32_t domogol_app(void* p) {
     gui_add_view_port(gui, view_port, GuiLayerFullscreen);
 
     // Wait for back key
-    while(exit_app != 1)
-        ;
+    while(exit_app != 1) {
+        static int cnt;
+        furi_delay_ms(1);
+        cnt++;
+        if(cnt >= 2000) break;
+    }
 
     // Clean up
     view_port_enabled_set(view_port, false);
