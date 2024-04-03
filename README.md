@@ -1,1 +1,1 @@
-# DomoGameOfLife
+# Flipper Zero Game of Life
