@@ -1,17 +1,17 @@
 # For details & more options, see documentation/AppManifests.md in firmware repo
 
 App(
-    appid="domogol",  # Must be unique
+    appid="flippergol",  # Must be unique
     name="Domo Game of Life",  # Displayed in menus
     apptype=FlipperAppType.EXTERNAL,
-    entry_point="domogol_app",
+    entry_point="flippergol_app",
     stack_size=2 * 1024,
     fap_category="Domo",
     # Optional values
     # fap_version="0.1",
-    fap_icon="domogol.png",  # 10x10 1-bit PNG
+    fap_icon="flippergol.png",  # 10x10 1-bit PNG
     # fap_description="A simple app",
     # fap_author="J. Doe",
-    # fap_weburl="https://github.com/user/domogol",
+    # fap_weburl="https://github.com/user/flippergol",
     fap_icon_assets="images",  # Image assets to compile for this application
 )
