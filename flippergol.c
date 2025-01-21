@@ -99,8 +99,30 @@ void update_grid(void)
 static void input_callback(InputEvent* input_event, void* context)
 {
     UNUSED(context);
-    if(input_event->key == InputKeyBack) // Back key pressed?
+    if     (input_event->key == InputKeyBack) // Back key pressed?
+    {
         exit_app = 1;
+    }
+    else if(input_event->key == InputKeyOk)
+    {
+        init_grid();
+    }
+    else if(input_event->key == InputKeyUp)
+    {
+        init_grid();
+    }
+    else if(input_event->key == InputKeyDown)
+    {
+        init_grid();
+    }
+    else if(input_event->key == InputKeyRight)
+    {
+        init_grid();
+    }
+    else if(input_event->key == InputKeyLeft)
+    {
+        init_grid();
+    }
 }
 
 
