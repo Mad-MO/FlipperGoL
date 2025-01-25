@@ -40,6 +40,10 @@ All other buttons reset the cells to a random pattern.
 
 <https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life>
 
+## License
+
+MIT License, see "License.txt".
+
 ## Author
 
 By domo
