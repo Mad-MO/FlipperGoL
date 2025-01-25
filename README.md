@@ -47,6 +47,13 @@ All other buttons reset the cells to a random pattern.
 
 MIT License, see "License.txt".
 
+## Installation
+
+- Install [ufbt](https://github.com/flipperdevices/flipperzero-ufbt)
+- Clone Project into local Projectfolder
+- Attach Flipper Zero via USB
+- Run "ufbt launch" within local Projectfolder
+
 ## Author
 
 By domo
