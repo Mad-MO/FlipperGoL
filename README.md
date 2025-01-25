@@ -32,7 +32,10 @@ Roadmap:
 
 ## Usage
 
-Start via "Apps" Menu.
+Open Program via "Apps" -> "Games"
+
+![Screenshot](./ScreenshotApp.png)
+
 The return button ends the program.
 All other buttons reset the cells to a random pattern.
 
