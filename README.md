@@ -17,8 +17,9 @@ Roadmap:
 
 - Show current count of living cells
 - Show current number of cycles
+- Switch between fullscreen and Info-Line (with ok button)
 - Detect end
-- Init with different modes
+- Init with different modes (with right and left keys)
   - Random
   - Blinker
   - Glider
@@ -26,7 +27,8 @@ Roadmap:
   - Pentomino
   - Diehard
   - Acorn
-- Adjustable speed
+- Adjustable speed (with up and down keys)
+- Add startup screen
 
 ## Usage
 
