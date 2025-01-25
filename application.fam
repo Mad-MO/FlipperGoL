@@ -2,7 +2,7 @@
 
 App(
     appid="flippergol",  # Must be unique
-    name="Domo Game of Life",  # Displayed in menus
+    name="Game of Life (by domo)",  # Displayed in menus
     apptype=FlipperAppType.EXTERNAL,
     entry_point="flippergol_app",
     stack_size=2 * 1024,
@@ -10,8 +10,8 @@ App(
     # Optional values
     fap_version="0.1",
     fap_icon="flippergol.png",  # 10x10 1-bit PNG
-    # fap_description="A simple app",
+    fap_description="A very basic implementation for Conway's Game of Life on Flipper Zero",
     fap_author="domo",
-    # fap_weburl="https://github.com/user/flippergol",
+    fap_weburl="https://github.com/Mad-MO/FlipperGoL",
     fap_icon_assets="images",  # Image assets to compile for this application
 )
