@@ -7,6 +7,11 @@
 static volatile int exit_app;
 static uint8_t grid[WIDTH][HEIGHT];
 static uint8_t new_grid[WIDTH][HEIGHT];
+static uint8_t fullscreen;
+static uint8_t speed;
+static uint16_t cells;
+static uint32_t cycles;
+static uint8_t mode;
 
 
 
@@ -27,6 +32,7 @@ void init_grid(void)
             }
         }
     }
+    cycles = 0;
 }
 
 
@@ -34,6 +40,7 @@ void init_grid(void)
 static void draw_grid_callback(Canvas* canvas, void* context)
 {
     int x, y;
+    char str[16];
     UNUSED(context);
 
     canvas_clear(canvas); // Clear display
@@ -47,6 +54,21 @@ static void draw_grid_callback(Canvas* canvas, void* context)
             }
         }
     }
+
+    // Handle status line
+    if(!fullscreen)
+    {
+        canvas_set_color(canvas, ColorWhite);
+        canvas_draw_box(canvas, 0, 54, 128, 10);
+        canvas_set_color(canvas, ColorBlack);
+        canvas_draw_line(canvas, 0, 53, 127, 53);
+        snprintf(str, sizeof(str), "Cyc:%li", cycles);
+        canvas_draw_str(canvas, 0, 62, str);
+        snprintf(str, sizeof(str), "Cell:%i", cells);
+        canvas_draw_str(canvas, 56, 62, str);
+        snprintf(str, sizeof(str), "Spd:%i", speed);
+        canvas_draw_str(canvas, 105, 62, str);
+    }
 }
 
 
@@ -54,6 +76,8 @@ static void draw_grid_callback(Canvas* canvas, void* context)
 void update_grid(void)
 {
     int x, y;
+    cycles++;
+    cells = 0;
     for(x=0; x<WIDTH; x++)
     {
         for(y=0; y<HEIGHT; y++)
@@ -83,10 +107,15 @@ void update_grid(void)
             else if((grid[x][y] == 0) && (neighbors == 3)) // Reproduction
             {
                 new_grid[x][y] = 1;
+                cells++;
             }
             else                                           // Stasis
             {
                 new_grid[x][y] = grid[x][y];
+                if(new_grid[x][y] == 1)
+                {
+                    cells++;
+                }
             }
         }
     }
@@ -99,29 +128,33 @@ void update_grid(void)
 static void input_callback(InputEvent* input_event, void* context)
 {
     UNUSED(context);
-    if     (input_event->key == InputKeyBack) // Back key pressed?
+    if      (input_event->key == InputKeyBack) // Back key pressed?
     {
         exit_app = 1;
     }
-    else if(input_event->key == InputKeyOk)
+    else if((input_event->key == InputKeyOk)    && (input_event->type == InputTypeRelease))
     {
-        init_grid();
+        fullscreen++;
+        fullscreen %= 2;
     }
-    else if(input_event->key == InputKeyUp)
+    else if((input_event->key == InputKeyUp)    && (input_event->type == InputTypeRelease))
     {
-        init_grid();
+        if(speed < 9) speed++;
     }
-    else if(input_event->key == InputKeyDown)
+    else if((input_event->key == InputKeyDown)  && (input_event->type == InputTypeRelease))
     {
-        init_grid();
+        if(speed > 0)
+        {
+            speed--;
+        }
     }
-    else if(input_event->key == InputKeyRight)
+    else if((input_event->key == InputKeyRight) && (input_event->type == InputTypeRelease))
     {
-        init_grid();
+        mode = 1;
     }
-    else if(input_event->key == InputKeyLeft)
+    else if((input_event->key == InputKeyLeft)  && (input_event->type == InputTypeRelease))
     {
-        init_grid();
+        mode = 1;
     }
 }
 
@@ -136,17 +169,31 @@ int32_t flippergol_app(void* p)
 
     // Init grid
     init_grid();
+    speed = 5;
 
     // Prepare
     view_port_draw_callback_set(view_port, draw_grid_callback, my_context);
     view_port_input_callback_set(view_port, input_callback, my_context);
     gui_add_view_port(gui, view_port, GuiLayerFullscreen);
 
-    // Wait for back key
+    // Loop until back key is pressed
     while(exit_app != 1)
     {
-        furi_delay_ms(50);
-        update_grid();
+        // Handle speed
+        furi_delay_ms(50 * (10 - speed));
+
+        // Handle different modes and update grid
+        if(mode)
+        {
+            init_grid();
+            mode = 0;
+        }
+        else
+        {
+            update_grid();
+        }
+
+        // Update canvas
         view_port_update(view_port);
     }
 

@@ -7,7 +7,9 @@ A very basic implementation for Conway's "Game of Life" on Flipper Zero.
 
 ## Screenshot
 
-![Screenshot](./Screenshot.png)
+![Screenshot](./Screenshot1.png)
+
+![Screenshot](./Screenshot2.png)
 
 ## Status
 
@@ -15,9 +17,6 @@ ALPHA - WORK IN PROGRESS WITH OPEN BUGS
 
 Roadmap:
 
-- Show current count of living cells
-- Show current number of cycles
-- Switch between fullscreen and Info-Line (with ok button)
 - Detect end
 - Init with different modes (with right and left keys)
   - Random
@@ -27,8 +26,14 @@ Roadmap:
   - Pentomino
   - Diehard
   - Acorn
-- Adjustable speed (with up and down keys)
 - Add startup screen
+
+## Features
+
+- Show current count of living cells
+- Show current number of cycles
+- Switch between fullscreen and Info-Line (with ok button)
+- Adjustable speed (with up and down keys)
 
 ## Usage
 
@@ -36,8 +41,10 @@ Open Program via "Apps" -> "Games"
 
 ![Screenshot](./ScreenshotApp.png)
 
-The return button ends the program.
-All other buttons reset the cells to a random pattern.
+- The "return" button ends the program
+- The "ok" button toggles fullscreen mode
+- The "up" and "down" buttons adjust the speed
+- The "right" and "left" buttons reset the cells to a random pattern
 
 ## Background
 
