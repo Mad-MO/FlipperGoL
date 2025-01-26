@@ -13,6 +13,8 @@ A very basic implementation for Conway's "Game of Life" on Flipper Zero.
 
 ![Screenshot](./Screenshot3.png)
 
+![Screenshot](./Screenshot4.png)
+
 ## Status
 
 WORK IN PROGRESS WITH KNOWN BUGS:
@@ -23,12 +25,12 @@ WORK IN PROGRESS WITH KNOWN BUGS:
 Roadmap:
 
 - Detect end
-- Add startup screen
 - Speed up fastest mode
 - Codecosmetic
 
 ## Features
 
+- Startup screen
 - Switch between fullscreen and Info-Line (with ok button)
 - Adjustable speed (with up and down keys)
 - Init with different modes (with right and left keys)
