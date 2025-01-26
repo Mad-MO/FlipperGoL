@@ -1,5 +1,9 @@
 #include <furi.h>
 #include <gui/gui.h>
+#include "flippergol_icons.h"
+
+#define SW_VERSION "v0.2"
+
 
 #define WIDTH    128
 #define HEIGHT   64
@@ -140,16 +144,31 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     cells = 0;
 
     // Draw grid to canvas
-    for(x=0; x<WIDTH; x++)
+    if(stage >= StageTypeInit)
     {
-        for(y=0; y<HEIGHT; y++)
+        for(x=0; x<WIDTH; x++)
         {
-            if(grid[x][y])
+            for(y=0; y<HEIGHT; y++)
             {
-                canvas_draw_dot(canvas, x, y);
-                cells++;
+                if(grid[x][y])
+                {
+                    canvas_draw_dot(canvas, x, y);
+                    cells++;
+                }
             }
         }
+    }
+
+    // Handle startup screen
+    if(stage == StageTypeStartup)
+    {
+        canvas_draw_icon(canvas, 0,  0, &I_flippergol);
+        canvas_draw_str(canvas, 14, 8, "Game of Life");  canvas_draw_str(canvas, 70,  8, SW_VERSION "  (domo)");
+        canvas_draw_str(canvas, 14, 21, "Return:");      canvas_draw_str(canvas, 70, 21, "End program");
+        canvas_draw_str(canvas, 14, 31, "OK:");          canvas_draw_str(canvas, 70, 31, "Fullscreen");
+        canvas_draw_str(canvas, 14, 41, "Right, left:"); canvas_draw_str(canvas, 70, 41, "Init modes");
+        canvas_draw_str(canvas, 14, 51, "Up, down:");    canvas_draw_str(canvas, 70, 51, "Adjust Speed");
+        canvas_draw_str(canvas,  0, 64, "Press OK to start");
     }
 
     // Handle mode info
@@ -172,7 +191,9 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     }
 
     // Handle status line
-    if(!fullscreen)
+    if(    (stage >= StageTypeInit)
+        && (!fullscreen)
+      )
     {
         canvas_set_color(canvas, ColorWhite);
         canvas_draw_box(canvas, 0, 54, 128, 10);
@@ -246,8 +267,15 @@ static void input_callback(InputEvent* input_event, void* context)
              && (input_event->type == InputTypeRelease)
            )
     {
-        fullscreen++;
-        fullscreen %= 2;
+        if(stage == StageTypeStartup)
+        {
+            stage = StageTypeInit;
+        }
+        else
+        {
+            fullscreen++;
+            fullscreen %= 2;
+        }
     }
     else if(    (input_event->key  == InputKeyUp)
              && (input_event->type == InputTypeRelease)
@@ -310,7 +338,7 @@ int32_t flippergol_app(void* p)
         // Handle different modes and update grid
         if     (stage == StageTypeStartup)
         {
-            if(timer >= 100)
+            if(timer >= 20000)
             {
                 stage = StageTypeInit;
                 timer = 0;
