@@ -121,10 +121,10 @@ static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
     int width;
     width = canvas_string_width(canvas, str);
     canvas_set_color(canvas, ColorWhite);
-    canvas_draw_box(canvas, 59-width/2, 11, width+6, 13);
+    canvas_draw_box(canvas, 59-width/2, 11, width+6, 15);
     canvas_set_color(canvas, ColorBlack);
-    canvas_draw_rframe(canvas, 60-width/2, 12, width+4, 11, 2);
-    canvas_draw_str(canvas, 62-width/2, 12+9, str);
+    canvas_draw_rframe(canvas, 60-width/2, 12, width+4, 13, 2);
+    canvas_draw_str(canvas, 62-width/2, 21, str);
 }
 
 
