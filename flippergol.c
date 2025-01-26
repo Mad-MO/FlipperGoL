@@ -17,10 +17,10 @@ typedef enum
     ModeTypeRandom,
     ModeTypeBlinker,
     ModeTypeGlider,
-    //ModeTypeGliderGun,
-    //ModeTypePentomino,
-    //ModeTypeDiehard,
-    //ModeTypeAcorn,
+    ModeTypeGliderGun,
+    ModeTypePentomino,
+    ModeTypeDiehard,
+    ModeTypeAcorn,
     // ----------------
     ModeTypeMax
 } ModeType;
@@ -51,17 +51,64 @@ void init_grid(void)
     }
     else if(mode == ModeTypeBlinker)
     {
-        grid[1][0] = 1;
-        grid[1][1] = 1;
-        grid[1][2] = 1;
+        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][1+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
     }
     else if(mode == ModeTypeGlider)
     {
-        grid[0][2] = 1;
-        grid[1][0] = 1;
-        grid[1][2] = 1;
-        grid[2][1] = 1;
-        grid[2][2] = 1;
+        grid[0+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[2+(WIDTH/2)][1+(HEIGHT/2)] = 1;
+        grid[2+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+    }
+    else if(mode == ModeTypeGliderGun)
+    {
+        grid[ 1][5] = 1; grid[ 1][6] = 1;
+        grid[ 2][5] = 1; grid[ 2][6] = 1;
+        grid[11][5] = 1; grid[11][6] = 1; grid[11][7] = 1;
+        grid[12][4] = 1; grid[12][8] = 1;
+        grid[13][3] = 1; grid[13][9] = 1;
+        grid[14][3] = 1; grid[14][9] = 1;
+        grid[15][6] = 1;
+        grid[16][4] = 1; grid[16][8] = 1;
+        grid[17][5] = 1; grid[17][6] = 1; grid[17][7] = 1;
+        grid[18][6] = 1;
+        grid[21][3] = 1; grid[21][4] = 1; grid[21][5] = 1;
+        grid[22][3] = 1; grid[22][4] = 1; grid[22][5] = 1;
+        grid[23][2] = 1; grid[23][6] = 1;
+        grid[25][1] = 1; grid[25][2] = 1; grid[25][6] = 1; grid[25][7] = 1;
+        grid[35][3] = 1; grid[35][4] = 1;
+        grid[36][3] = 1; grid[36][4] = 1;
+    }
+    else if(mode == ModeTypePentomino)
+    {
+        grid[0+(WIDTH/2)][1+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][1+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[2+(WIDTH/2)][0+(HEIGHT/2)] = 1;
+    }
+    else if(mode == ModeTypeDiehard)
+    {
+        grid[0+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][5+(HEIGHT/2)] = 1;
+        grid[5+(WIDTH/2)][5+(HEIGHT/2)] = 1;
+        grid[6+(WIDTH/2)][3+(HEIGHT/2)] = 1;
+        grid[6+(WIDTH/2)][5+(HEIGHT/2)] = 1;
+        grid[7+(WIDTH/2)][5+(HEIGHT/2)] = 1;
+    }
+    else if(mode == ModeTypeAcorn)
+    {
+        grid[0+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[1+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[3+(WIDTH/2)][3+(HEIGHT/2)] = 1;
+        grid[4+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[5+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[6+(WIDTH/2)][4+(HEIGHT/2)] = 1;
     }
 
     cycles = 0;
@@ -74,10 +121,10 @@ static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
     int width;
     width = canvas_string_width(canvas, str);
     canvas_set_color(canvas, ColorWhite);
-    canvas_draw_box(canvas, 59-width/2, 21, width+6, 13);
+    canvas_draw_box(canvas, 59-width/2, 11, width+6, 13);
     canvas_set_color(canvas, ColorBlack);
-    canvas_draw_rframe(canvas, 60-width/2, 22, width+4, 11, 2);
-    canvas_draw_str(canvas, 62-width/2, 22+9, str);
+    canvas_draw_rframe(canvas, 60-width/2, 12, width+4, 11, 2);
+    canvas_draw_str(canvas, 62-width/2, 12+9, str);
 }
 
 
@@ -109,17 +156,19 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     if(stage == StageTypeShowInfo)
     {
         if     (mode == ModeTypeRandom)
-        {
             draw_str_in_rounded_frame(canvas, "Random");
-        }
         else if(mode == ModeTypeBlinker)
-        {
             draw_str_in_rounded_frame(canvas, "Blinker");
-        }
         else if(mode == ModeTypeGlider)
-        {
             draw_str_in_rounded_frame(canvas, "Glider");
-        }
+        else if(mode == ModeTypeGliderGun)
+            draw_str_in_rounded_frame(canvas, "Glider gun");
+        else if(mode == ModeTypePentomino)
+            draw_str_in_rounded_frame(canvas, "Pentomino");
+        else if(mode == ModeTypeDiehard)
+            draw_str_in_rounded_frame(canvas, "Diehard");
+        else if(mode == ModeTypeAcorn)
+            draw_str_in_rounded_frame(canvas, "Acorn");
     }
 
     // Handle status line
