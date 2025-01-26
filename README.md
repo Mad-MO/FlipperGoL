@@ -15,12 +15,17 @@ A very basic implementation for Conway's "Game of Life" on Flipper Zero.
 
 ## Status
 
-ALPHA - WORK IN PROGRESS WITH OPEN BUGS
+WORK IN PROGRESS WITH KNOWN BUGS:
+
+- Temporary grid has to be cleared before using which shouldn't be needed
+- Some odd behaviour with the first line (Glider doesn't move back in correctly when leaving the lower side)
 
 Roadmap:
 
 - Detect end
 - Add startup screen
+- Speed up fastest mode
+- Codecosmetic
 
 ## Features
 
