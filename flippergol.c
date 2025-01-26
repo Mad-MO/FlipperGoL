@@ -11,27 +11,59 @@ static uint8_t fullscreen;
 static uint8_t speed;
 static uint16_t cells;
 static uint32_t cycles;
-static uint8_t mode;
+
+typedef enum
+{
+    ModeTypeRandom,
+    ModeTypeBlinker,
+    ModeTypeGlider,
+    //ModeTypeGliderGun,
+    //ModeTypePentomino,
+    //ModeTypeDiehard,
+    //ModeTypeAcorn,
+    // ----------------
+    ModeTypeMax
+} ModeType;
+static ModeType mode;
+
+typedef enum
+{
+    StageTypeStartup,  // Show startup screen
+    StageTypeInit,     // Initialize grid
+    StageTypeShowInfo, // Show info for current mode
+    StageTypeRunning,  // Running simulation
+    StageTypeEnd       // End of simulation has been reached
+} StageType;
+static StageType stage;
 
 
 
 void init_grid(void)
 {
-    int x, y;
-    for(x=0; x<WIDTH; x++)
+    memset(grid, 0, sizeof(grid));
+
+    if(mode == ModeTypeRandom)
     {
-        for(y=0; y<HEIGHT; y++)
-        {
-            if(random() & 1)
-            {
-                grid[x][y] = 1;
-            }
-            else
-            {
-                grid[x][y] = 0;
-            }
-        }
+        int x, y;
+        for(x=0; x<WIDTH; x++)
+            for(y=0; y<HEIGHT; y++)
+                grid[x][y] = (random() & 1);
     }
+    else if(mode == ModeTypeBlinker)
+    {
+        grid[1][0] = 1;
+        grid[1][1] = 1;
+        grid[1][2] = 1;
+    }
+    else if(mode == ModeTypeGlider)
+    {
+        grid[0][2] = 1;
+        grid[1][0] = 1;
+        grid[1][2] = 1;
+        grid[2][1] = 1;
+        grid[2][2] = 1;
+    }
+
     cycles = 0;
 }
 
@@ -44,6 +76,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     UNUSED(context);
 
     canvas_clear(canvas); // Clear display
+    cells = 0;
     for(x=0; x<WIDTH; x++)
     {
         for(y=0; y<HEIGHT; y++)
@@ -51,6 +84,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
             if(grid[x][y])
             {
                 canvas_draw_dot(canvas, x, y);
+                cells++;
             }
         }
     }
@@ -76,8 +110,14 @@ static void draw_grid_callback(Canvas* canvas, void* context)
 void update_grid(void)
 {
     int x, y;
+
+
+// Todo: Clearing new_grid shouldn't be needed here (it's completely set below), but somehow it is?!
+// When switching from random to blinker, sometimes the grid is not updated correctly :-(
+memset(new_grid, 0, sizeof(grid));
+
+
     cycles++;
-    cells = 0;
     for(x=0; x<WIDTH; x++)
     {
         for(y=0; y<HEIGHT; y++)
@@ -96,27 +136,15 @@ void update_grid(void)
                     neighbors += grid[nx][ny];
                 }
             }
+
             if     ((grid[x][y] == 1) && (neighbors  < 2)) // Underpopulation
-            {
                 new_grid[x][y] = 0;
-            }
             else if((grid[x][y] == 1) && (neighbors  > 3)) // Overpopulation
-            {
                 new_grid[x][y] = 0;
-            }
             else if((grid[x][y] == 0) && (neighbors == 3)) // Reproduction
-            {
                 new_grid[x][y] = 1;
-                cells++;
-            }
             else                                           // Stasis
-            {
                 new_grid[x][y] = grid[x][y];
-                if(new_grid[x][y] == 1)
-                {
-                    cells++;
-                }
-            }
         }
     }
 
@@ -132,29 +160,40 @@ static void input_callback(InputEvent* input_event, void* context)
     {
         exit_app = 1;
     }
-    else if((input_event->key == InputKeyOk)    && (input_event->type == InputTypeRelease))
+    else if(    (input_event->key  == InputKeyOk)
+             && (input_event->type == InputTypeRelease)
+           )
     {
         fullscreen++;
         fullscreen %= 2;
     }
-    else if((input_event->key == InputKeyUp)    && (input_event->type == InputTypeRelease))
+    else if(    (input_event->key  == InputKeyUp)
+             && (input_event->type == InputTypeRelease)
+           )
     {
         if(speed < 9) speed++;
     }
-    else if((input_event->key == InputKeyDown)  && (input_event->type == InputTypeRelease))
+    else if(    (input_event->key  == InputKeyDown)
+             && (input_event->type == InputTypeRelease)
+           )
     {
-        if(speed > 0)
-        {
-            speed--;
-        }
+        if(speed > 0) speed--;
     }
-    else if((input_event->key == InputKeyRight) && (input_event->type == InputTypeRelease))
+    else if(    (input_event->key  == InputKeyRight)
+             && (input_event->type == InputTypeRelease)
+           )
     {
-        mode = 1;
+        mode++;
+        mode %= ModeTypeMax;
+        stage = StageTypeInit;
     }
-    else if((input_event->key == InputKeyLeft)  && (input_event->type == InputTypeRelease))
+    else if(    (input_event->key  == InputKeyLeft)
+             && (input_event->type == InputTypeRelease)
+           )
     {
-        mode = 1;
+        if(mode == 0) mode = ModeTypeMax - 1;
+        else          mode--;
+        stage = StageTypeInit;
     }
 }
 
@@ -167,30 +206,55 @@ int32_t flippergol_app(void* p)
     void* my_context = NULL;
     UNUSED(p);
 
-    // Init grid
-    init_grid();
-    speed = 5;
-
     // Prepare
     view_port_draw_callback_set(view_port, draw_grid_callback, my_context);
     view_port_input_callback_set(view_port, input_callback, my_context);
     gui_add_view_port(gui, view_port, GuiLayerFullscreen);
 
+    // Init
+    mode  = ModeTypeRandom;
+    stage = StageTypeStartup;
+    speed = 5;
+
     // Loop until back key is pressed
     while(exit_app != 1)
     {
+        static uint32_t timer;
+
         // Handle speed
         furi_delay_ms(50 * (10 - speed));
+        timer += (50 * (10 - speed));
 
         // Handle different modes and update grid
-        if(mode)
+        if     (stage == StageTypeStartup)
+        {
+            if(timer >= 100)
+            {
+                stage = StageTypeInit;
+                timer = 0;
+            }
+        }
+        else if(stage == StageTypeInit)
         {
             init_grid();
-            mode = 0;
+            stage = StageTypeShowInfo;
+            timer = 0;
         }
-        else
+        else if(stage == StageTypeShowInfo)
+        {
+            if(timer >= 1000)
+            {
+                stage = StageTypeRunning;
+                timer = 0;
+            }
+        }
+        else if(stage == StageTypeRunning)
         {
             update_grid();
+        }
+        else if(stage == StageTypeEnd)
+        {
+            // Do nothing...
         }
 
         // Update canvas
