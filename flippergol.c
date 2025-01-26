@@ -69,14 +69,30 @@ void init_grid(void)
 
 
 
+static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
+{
+    int width;
+    width = canvas_string_width(canvas, str);
+    canvas_set_color(canvas, ColorWhite);
+    canvas_draw_box(canvas, 59-width/2, 21, width+6, 13);
+    canvas_set_color(canvas, ColorBlack);
+    canvas_draw_rframe(canvas, 60-width/2, 22, width+4, 11, 2);
+    canvas_draw_str(canvas, 62-width/2, 22+9, str);
+}
+
+
+
 static void draw_grid_callback(Canvas* canvas, void* context)
 {
     int x, y;
     char str[16];
     UNUSED(context);
 
-    canvas_clear(canvas); // Clear display
+    // Clear display
+    canvas_clear(canvas);
     cells = 0;
+
+    // Draw grid to canvas
     for(x=0; x<WIDTH; x++)
     {
         for(y=0; y<HEIGHT; y++)
@@ -86,6 +102,23 @@ static void draw_grid_callback(Canvas* canvas, void* context)
                 canvas_draw_dot(canvas, x, y);
                 cells++;
             }
+        }
+    }
+
+    // Handle mode info
+    if(stage == StageTypeShowInfo)
+    {
+        if     (mode == ModeTypeRandom)
+        {
+            draw_str_in_rounded_frame(canvas, "Random");
+        }
+        else if(mode == ModeTypeBlinker)
+        {
+            draw_str_in_rounded_frame(canvas, "Blinker");
+        }
+        else if(mode == ModeTypeGlider)
+        {
+            draw_str_in_rounded_frame(canvas, "Glider");
         }
     }
 
@@ -242,7 +275,7 @@ int32_t flippergol_app(void* p)
         }
         else if(stage == StageTypeShowInfo)
         {
-            if(timer >= 1000)
+            if(timer >= 2000)
             {
                 stage = StageTypeRunning;
                 timer = 0;
