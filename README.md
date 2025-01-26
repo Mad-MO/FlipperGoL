@@ -11,6 +11,8 @@ A very basic implementation for Conway's "Game of Life" on Flipper Zero.
 
 ![Screenshot](./Screenshot2.png)
 
+![Screenshot](./Screenshot3.png)
+
 ## Status
 
 ALPHA - WORK IN PROGRESS WITH OPEN BUGS
@@ -18,6 +20,12 @@ ALPHA - WORK IN PROGRESS WITH OPEN BUGS
 Roadmap:
 
 - Detect end
+- Add startup screen
+
+## Features
+
+- Switch between fullscreen and Info-Line (with ok button)
+- Adjustable speed (with up and down keys)
 - Init with different modes (with right and left keys)
   - Random
   - Blinker
@@ -26,14 +34,8 @@ Roadmap:
   - Pentomino
   - Diehard
   - Acorn
-- Add startup screen
-
-## Features
-
 - Show current count of living cells
 - Show current number of cycles
-- Switch between fullscreen and Info-Line (with ok button)
-- Adjustable speed (with up and down keys)
 
 ## Usage
 
