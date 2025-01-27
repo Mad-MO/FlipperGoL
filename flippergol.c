@@ -2,7 +2,7 @@
 #include <gui/gui.h>
 #include "flippergol_icons.h"
 
-#define SW_VERSION "v0.2"
+#define SW_VERSION "v0.3"
 
 
 #define WIDTH    128
