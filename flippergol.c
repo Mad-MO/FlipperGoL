@@ -8,7 +8,7 @@
 #define WIDTH    128
 #define HEIGHT   64
 
-static volatile int exit_app;
+static volatile uint8_t exit_app;
 static uint8_t grid[WIDTH][HEIGHT];
 static uint8_t new_grid[WIDTH][HEIGHT];
 static uint8_t fullscreen;
@@ -48,7 +48,7 @@ void init_grid(void)
 
     if(mode == ModeTypeRandom)
     {
-        int x, y;
+        uint8_t x, y;
         for(x=0; x<WIDTH; x++)
             for(y=0; y<HEIGHT; y++)
                 grid[x][y] = (random() & 1);
@@ -122,7 +122,7 @@ void init_grid(void)
 
 static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
 {
-    int width;
+    uint8_t width;
     width = canvas_string_width(canvas, str);
     canvas_set_color(canvas, ColorWhite);
     canvas_draw_box(canvas, 59-width/2, 11, width+6, 15);
@@ -135,7 +135,7 @@ static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
 
 static void draw_grid_callback(Canvas* canvas, void* context)
 {
-    int x, y;
+    uint8_t x, y;
     char str[16];
     UNUSED(context);
 
@@ -212,30 +212,24 @@ static void draw_grid_callback(Canvas* canvas, void* context)
 
 void update_grid(void)
 {
-    int x, y;
-
-
-// Todo: Clearing new_grid shouldn't be needed here (it's completely set below), but somehow it is?!
-// When switching from random to blinker, sometimes the grid is not updated correctly :-(
-memset(new_grid, 0, sizeof(grid));
-
+    uint8_t x, y;
 
     cycles++;
     for(x=0; x<WIDTH; x++)
     {
         for(y=0; y<HEIGHT; y++)
         {
-            int neighbors = 0;
-            for(int dx=-1; dx<=1; dx++)
+            uint8_t neighbors = 0;
+            for(int8_t dx=-1; dx<=1; dx++)
             {
-                for(int dy=-1; dy<=1; dy++)
+                for(int8_t dy=-1; dy<=1; dy++)
                 {
                     if(dx == 0 && dy == 0)
                     {
                         continue;
                     }
-                    int nx = (x + dx) % WIDTH;
-                    int ny = (y + dy) % HEIGHT;
+                    uint8_t nx = (WIDTH + x + dx) % WIDTH;
+                    uint8_t ny = (HEIGHT + y + dy) % HEIGHT;
                     neighbors += grid[nx][ny];
                 }
             }
