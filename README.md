@@ -22,7 +22,6 @@ WORK IN PROGRESS WITH PROBABLY SOME BUGS
 Roadmap:
 
 - Detect end
-- Codecosmetic
 
 ## Features
 

@@ -135,6 +135,47 @@ void init_grid(void)
 
 
 
+// Function to update the grid based on the game of life rules
+void update_grid(void)
+{
+    uint8_t x, y;
+
+    cycles++;
+    for(x=0; x<WIDTH; x++)
+    {
+        for(y=0; y<HEIGHT; y++)
+        {
+            uint8_t neighbors = 0;
+            for(int8_t dx=-1; dx<=1; dx++)
+            {
+                for(int8_t dy=-1; dy<=1; dy++)
+                {
+                    if(dx == 0 && dy == 0)
+                    {
+                        continue;
+                    }
+                    uint8_t nx = (WIDTH + x + dx) % WIDTH;
+                    uint8_t ny = (HEIGHT + y + dy) % HEIGHT;
+                    neighbors += grid[nx][ny];
+                }
+            }
+
+            if     ((grid[x][y] == 1) && (neighbors  < 2)) // Underpopulation
+                new_grid[x][y] = 0;
+            else if((grid[x][y] == 1) && (neighbors  > 3)) // Overpopulation
+                new_grid[x][y] = 0;
+            else if((grid[x][y] == 0) && (neighbors == 3)) // Reproduction
+                new_grid[x][y] = 1;
+            else                                           // Stasis
+                new_grid[x][y] = grid[x][y];
+        }
+    }
+
+    memcpy(grid, new_grid, sizeof(grid));
+}
+
+
+
 // Function to draw a string in a rounded frame for the mode name
 static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
 {
@@ -223,47 +264,6 @@ static void draw_grid_callback(Canvas* canvas, void* context)
         snprintf(str, sizeof(str), "Spd:%i", speed);
         canvas_draw_str(canvas, 105, 62, str);
     }
-}
-
-
-
-// Function to update the grid based on the game of life rules
-void update_grid(void)
-{
-    uint8_t x, y;
-
-    cycles++;
-    for(x=0; x<WIDTH; x++)
-    {
-        for(y=0; y<HEIGHT; y++)
-        {
-            uint8_t neighbors = 0;
-            for(int8_t dx=-1; dx<=1; dx++)
-            {
-                for(int8_t dy=-1; dy<=1; dy++)
-                {
-                    if(dx == 0 && dy == 0)
-                    {
-                        continue;
-                    }
-                    uint8_t nx = (WIDTH + x + dx) % WIDTH;
-                    uint8_t ny = (HEIGHT + y + dy) % HEIGHT;
-                    neighbors += grid[nx][ny];
-                }
-            }
-
-            if     ((grid[x][y] == 1) && (neighbors  < 2)) // Underpopulation
-                new_grid[x][y] = 0;
-            else if((grid[x][y] == 1) && (neighbors  > 3)) // Overpopulation
-                new_grid[x][y] = 0;
-            else if((grid[x][y] == 0) && (neighbors == 3)) // Reproduction
-                new_grid[x][y] = 1;
-            else                                           // Stasis
-                new_grid[x][y] = grid[x][y];
-        }
-    }
-
-    memcpy(grid, new_grid, sizeof(grid));
 }
 
 
