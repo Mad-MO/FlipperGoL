@@ -337,6 +337,8 @@ int32_t flippergol_app(void* p)
     gui_add_view_port(gui, view_port, GuiLayerFullscreen);
 
     // Init
+    static uint32_t last_ticks;
+    last_ticks = furi_get_tick();
     mode  = ModeTypeRandom;
     stage = StageTypeStartup;
     speed = 5;
@@ -345,7 +347,6 @@ int32_t flippergol_app(void* p)
     while(exit_app != 1)
     {
         static uint32_t timer;
-        static uint32_t last_ticks;
                uint32_t ticks;
 
         // Handle passed time
