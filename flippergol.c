@@ -275,13 +275,13 @@ static void input_callback(InputEvent* input_event, void* context)
              && (input_event->type == InputTypeRelease)
            )
     {
-        if(speed < 9) speed++;
+        if(speed < 5) speed++;
     }
     else if(    (input_event->key  == InputKeyDown)
              && (input_event->type == InputTypeRelease)
            )
     {
-        if(speed > 0) speed--;
+        if(speed > 1) speed--;
     }
     else if(    (input_event->key  == InputKeyRight)
              && (input_event->type == InputTypeRelease)
@@ -324,10 +324,20 @@ int32_t flippergol_app(void* p)
     while(exit_app != 1)
     {
         static uint32_t timer;
+        static uint32_t last_ticks;
+               uint32_t ticks;
+
+        // Handle passed time
+        ticks = furi_get_tick();
+        timer += (ticks - last_ticks);
+        last_ticks = ticks;
 
         // Handle speed
-        furi_delay_ms(50 * (10 - speed));
-        timer += (50 * (10 - speed));
+        if     (speed == 1) furi_delay_ms(500);
+        else if(speed == 2) furi_delay_ms(250);
+        else if(speed == 3) furi_delay_ms(125);
+        else if(speed == 4) furi_delay_ms( 50);
+        else                furi_delay_ms( 10);
 
         // Handle different modes and update grid
         if     (stage == StageTypeStartup)
