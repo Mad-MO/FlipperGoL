@@ -1,13 +1,27 @@
+
+// File:    flippergol.c
+// Author:  Martin Ochs
+// License: MIT
+// Brief:   A very basic python implementation for Conway's "Game of Life"
+//          using Tkinter for the GUI. The simulation can be controlled by
+//          the speed slider and the buttons for different initial states.
+
+
+
 #include <furi.h>
 #include <gui/gui.h>
 #include "flippergol_icons.h"
 
+
+
+// Define SW name and Version
 #define SW_VERSION "v0.3"
 
-
+// Define the size of the grid
 #define WIDTH    128
 #define HEIGHT   64
 
+// Create the grid to represent the cells
 static volatile uint8_t exit_app;
 static uint8_t grid[WIDTH][HEIGHT];
 static uint8_t new_grid[WIDTH][HEIGHT];
@@ -42,6 +56,7 @@ static StageType stage;
 
 
 
+// Function to initialize the grid
 void init_grid(void)
 {
     memset(grid, 0, sizeof(grid));
@@ -120,6 +135,7 @@ void init_grid(void)
 
 
 
+// Function to draw a string in a rounded frame for the mode name
 static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
 {
     uint8_t width;
@@ -133,6 +149,7 @@ static void draw_str_in_rounded_frame(Canvas* canvas, const char* str)
 
 
 
+// Function to draw the grid on the canvas
 static void draw_grid_callback(Canvas* canvas, void* context)
 {
     uint8_t x, y;
@@ -210,6 +227,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
 
 
 
+// Function to update the grid based on the game of life rules
 void update_grid(void)
 {
     uint8_t x, y;
@@ -250,6 +268,7 @@ void update_grid(void)
 
 
 
+// Function to handle input events
 static void input_callback(InputEvent* input_event, void* context)
 {
     UNUSED(context);
@@ -303,6 +322,7 @@ static void input_callback(InputEvent* input_event, void* context)
 
 
 
+// Function to handle one life cycle of the simulation
 int32_t flippergol_app(void* p)
 {
     Gui* gui = furi_record_open(RECORD_GUI);
