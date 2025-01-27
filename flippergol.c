@@ -15,16 +15,17 @@
 
 
 // Define SW name and Version
-#define SW_VERSION "v0.3"
+#define SW_NAME "Game of Life"
+#define SW_VERS "v0.3"
 
 // Define the size of the grid
-#define WIDTH    128
-#define HEIGHT   64
+#define GRID_WIDTH    128
+#define GRID_HEIGHT   64
 
 // Create the grid to represent the cells
 static volatile uint8_t exit_app;
-static uint8_t grid[WIDTH][HEIGHT];
-static uint8_t new_grid[WIDTH][HEIGHT];
+static uint8_t grid[GRID_WIDTH][GRID_HEIGHT];
+static uint8_t new_grid[GRID_WIDTH][GRID_HEIGHT];
 static uint8_t fullscreen;
 static uint8_t speed;
 static uint16_t cells;
@@ -64,23 +65,23 @@ void init_grid(void)
     if(mode == ModeTypeRandom)
     {
         uint8_t x, y;
-        for(x=0; x<WIDTH; x++)
-            for(y=0; y<HEIGHT; y++)
+        for(x=0; x<GRID_WIDTH; x++)
+            for(y=0; y<GRID_HEIGHT; y++)
                 grid[x][y] = (random() & 1);
     }
     else if(mode == ModeTypeBlinker)
     {
-        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][1+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][0+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][1+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
     }
     else if(mode == ModeTypeGlider)
     {
-        grid[0+(WIDTH/2)][2+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
-        grid[2+(WIDTH/2)][1+(HEIGHT/2)] = 1;
-        grid[2+(WIDTH/2)][2+(HEIGHT/2)] = 1;
+        grid[0+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][0+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
+        grid[2+(GRID_WIDTH/2)][1+(GRID_HEIGHT/2)] = 1;
+        grid[2+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
     }
     else if(mode == ModeTypeGliderGun)
     {
@@ -103,31 +104,31 @@ void init_grid(void)
     }
     else if(mode == ModeTypePentomino)
     {
-        grid[0+(WIDTH/2)][1+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][0+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][1+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
-        grid[2+(WIDTH/2)][0+(HEIGHT/2)] = 1;
+        grid[0+(GRID_WIDTH/2)][1+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][0+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][1+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
+        grid[2+(GRID_WIDTH/2)][0+(GRID_HEIGHT/2)] = 1;
     }
     else if(mode == ModeTypeDiehard)
     {
-        grid[0+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][5+(HEIGHT/2)] = 1;
-        grid[5+(WIDTH/2)][5+(HEIGHT/2)] = 1;
-        grid[6+(WIDTH/2)][3+(HEIGHT/2)] = 1;
-        grid[6+(WIDTH/2)][5+(HEIGHT/2)] = 1;
-        grid[7+(WIDTH/2)][5+(HEIGHT/2)] = 1;
+        grid[0+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][5+(GRID_HEIGHT/2)] = 1;
+        grid[5+(GRID_WIDTH/2)][5+(GRID_HEIGHT/2)] = 1;
+        grid[6+(GRID_WIDTH/2)][3+(GRID_HEIGHT/2)] = 1;
+        grid[6+(GRID_WIDTH/2)][5+(GRID_HEIGHT/2)] = 1;
+        grid[7+(GRID_WIDTH/2)][5+(GRID_HEIGHT/2)] = 1;
     }
     else if(mode == ModeTypeAcorn)
     {
-        grid[0+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][2+(HEIGHT/2)] = 1;
-        grid[1+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[3+(WIDTH/2)][3+(HEIGHT/2)] = 1;
-        grid[4+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[5+(WIDTH/2)][4+(HEIGHT/2)] = 1;
-        grid[6+(WIDTH/2)][4+(HEIGHT/2)] = 1;
+        grid[0+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][2+(GRID_HEIGHT/2)] = 1;
+        grid[1+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[3+(GRID_WIDTH/2)][3+(GRID_HEIGHT/2)] = 1;
+        grid[4+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[5+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
+        grid[6+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
     }
 
     cycles = 0;
@@ -141,9 +142,9 @@ void update_grid(void)
     uint8_t x, y;
 
     cycles++;
-    for(x=0; x<WIDTH; x++)
+    for(x=0; x<GRID_WIDTH; x++)
     {
-        for(y=0; y<HEIGHT; y++)
+        for(y=0; y<GRID_HEIGHT; y++)
         {
             uint8_t neighbors = 0;
             for(int8_t dx=-1; dx<=1; dx++)
@@ -154,8 +155,8 @@ void update_grid(void)
                     {
                         continue;
                     }
-                    uint8_t nx = (WIDTH + x + dx) % WIDTH;
-                    uint8_t ny = (HEIGHT + y + dy) % HEIGHT;
+                    uint8_t nx = (GRID_WIDTH + x + dx) % GRID_WIDTH;
+                    uint8_t ny = (GRID_HEIGHT + y + dy) % GRID_HEIGHT;
                     neighbors += grid[nx][ny];
                 }
             }
@@ -204,9 +205,9 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     // Draw grid to canvas
     if(stage >= StageTypeInit)
     {
-        for(x=0; x<WIDTH; x++)
+        for(x=0; x<GRID_WIDTH; x++)
         {
-            for(y=0; y<HEIGHT; y++)
+            for(y=0; y<GRID_HEIGHT; y++)
             {
                 if(grid[x][y])
                 {
@@ -221,7 +222,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
     if(stage == StageTypeStartup)
     {
         canvas_draw_icon(canvas, 0,  0, &I_flippergol);
-        canvas_draw_str(canvas, 14, 8, "Game of Life");  canvas_draw_str(canvas, 70,  8, SW_VERSION "  (domo)");
+        canvas_draw_str(canvas, 14, 8, SW_NAME);         canvas_draw_str(canvas, 70,  8, SW_VERS "  (domo)");
         canvas_draw_str(canvas, 14, 21, "Return:");      canvas_draw_str(canvas, 70, 21, "End program");
         canvas_draw_str(canvas, 14, 31, "OK:");          canvas_draw_str(canvas, 70, 31, "Fullscreen");
         canvas_draw_str(canvas, 14, 41, "Right, left:"); canvas_draw_str(canvas, 70, 41, "Init modes");
