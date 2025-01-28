@@ -30,6 +30,10 @@ static uint8_t fullscreen;
 static uint8_t speed;
 static uint16_t cells_alive;
 static uint32_t cycle_counter;
+#define END_DET_CNT 60
+static uint8_t end_det[END_DET_CNT];
+static uint8_t end_det_pos;
+
 
 typedef enum
 {
@@ -321,6 +325,31 @@ static void input_callback(InputEvent* input_event, void* context)
 
 
 
+uint8_t end_detection(void)
+{
+    end_det_pos++;
+    end_det_pos %= END_DET_CNT;
+    end_det[end_det_pos] = cells_alive;
+    if(cells_alive == 0)
+        return 1;
+    if(cycle_counter > END_DET_CNT)                                 // At least END_DET_CNT cycles needed for detection
+    {
+        for(uint8_t pattern=1; pattern<=(END_DET_CNT/2); pattern++) // Test pattern in the length of 1 to half of the buffer
+        {
+            for(uint8_t testpos=pattern; testpos<END_DET_CNT; testpos++)
+            {
+                if(end_det[testpos] != end_det[testpos % pattern])  // Pattern not found? -> End loop and test next pattern
+                    break;
+                if(testpos == END_DET_CNT - 1)                      // End of loop reached? -> Pattern found!
+                    return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+
+
 // Function to handle one life cycle of the simulation
 int32_t flippergol_app(void* p)
 {
@@ -384,12 +413,27 @@ int32_t flippergol_app(void* p)
         }
         else if(stage == StageTypeRunning)
         {
-            update_grid();
-            cycle_counter++;
+            if(end_detection())
+            {
+                stage = StageTypeEnd;
+                timer = 0;
+            }
+            else
+            {
+                cycle_counter++;
+                update_grid();
+            }
         }
         else if(stage == StageTypeEnd)
         {
-            // Do nothing...
+            update_grid();
+            if(timer >= 5000)
+            {
+                mode++;
+                mode %= ModeTypeMax;
+                stage = StageTypeInit;
+                timer = 0;
+            }
         }
 
         // Update canvas
