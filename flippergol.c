@@ -28,8 +28,8 @@ static uint8_t grid[GRID_WIDTH][GRID_HEIGHT];
 static uint8_t new_grid[GRID_WIDTH][GRID_HEIGHT];
 static uint8_t fullscreen;
 static uint8_t speed;
-static uint16_t cells;
-static uint32_t cycles;
+static uint16_t cells_alive;
+static uint32_t cycle_counter;
 
 typedef enum
 {
@@ -131,7 +131,7 @@ void init_grid(void)
         grid[6+(GRID_WIDTH/2)][4+(GRID_HEIGHT/2)] = 1;
     }
 
-    cycles = 0;
+    cycle_counter = 0;
 }
 
 
@@ -140,8 +140,6 @@ void init_grid(void)
 void update_grid(void)
 {
     uint8_t x, y;
-
-    cycles++;
     for(x=0; x<GRID_WIDTH; x++)
     {
         for(y=0; y<GRID_HEIGHT; y++)
@@ -200,7 +198,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
 
     // Clear display
     canvas_clear(canvas);
-    cells = 0;
+    cells_alive = 0;
 
     // Draw grid to canvas
     if(stage >= StageTypeInit)
@@ -212,7 +210,7 @@ static void draw_grid_callback(Canvas* canvas, void* context)
                 if(grid[x][y])
                 {
                     canvas_draw_dot(canvas, x, y);
-                    cells++;
+                    cells_alive++;
                 }
             }
         }
@@ -258,9 +256,9 @@ static void draw_grid_callback(Canvas* canvas, void* context)
         canvas_draw_box(canvas, 0, 54, 128, 10);
         canvas_set_color(canvas, ColorBlack);
         canvas_draw_line(canvas, 0, 53, 127, 53);
-        snprintf(str, sizeof(str), "Cyc:%li", cycles);
+        snprintf(str, sizeof(str), "Cyc:%li", cycle_counter);
         canvas_draw_str(canvas, 0, 62, str);
-        snprintf(str, sizeof(str), "Cell:%i", cells);
+        snprintf(str, sizeof(str), "Cell:%i", cells_alive);
         canvas_draw_str(canvas, 56, 62, str);
         snprintf(str, sizeof(str), "Spd:%i", speed);
         canvas_draw_str(canvas, 105, 62, str);
@@ -387,6 +385,7 @@ int32_t flippergol_app(void* p)
         else if(stage == StageTypeRunning)
         {
             update_grid();
+            cycle_counter++;
         }
         else if(stage == StageTypeEnd)
         {
