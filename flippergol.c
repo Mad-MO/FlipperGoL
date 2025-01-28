@@ -16,7 +16,7 @@
 
 // Define SW name and Version
 #define SW_NAME "Game of Life"
-#define SW_VERS "v0.3"
+#define SW_VERS "v0.4"
 
 // Define the size of the grid
 #define GRID_WIDTH    128
