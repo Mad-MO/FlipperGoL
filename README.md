@@ -3,7 +3,7 @@
 
 ## Description
 
-A very basic implementation for Conway's "Game of Life" on Flipper Zero.
+A basic implementation for Conway's "Game of Life" on Flipper Zero.
 
 ## Screenshot
 
@@ -14,14 +14,6 @@ A very basic implementation for Conway's "Game of Life" on Flipper Zero.
 ![Screenshot](./Screenshot3.png)
 
 ![Screenshot](./Screenshot4.png)
-
-## Status
-
-WORK IN PROGRESS WITH PROBABLY SOME BUGS
-
-Roadmap:
-
-- Detect end
 
 ## Features
 
@@ -38,6 +30,7 @@ Roadmap:
   - Acorn
 - Show current count of living cells
 - Show current number of cycles
+- End detection with automated start of new pattern
 
 ## Usage
 
