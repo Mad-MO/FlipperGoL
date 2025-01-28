@@ -260,10 +260,10 @@ static void draw_grid_callback(Canvas* canvas, void* context)
         canvas_draw_box(canvas, 0, 54, 128, 10);
         canvas_set_color(canvas, ColorBlack);
         canvas_draw_line(canvas, 0, 53, 127, 53);
-        snprintf(str, sizeof(str), "Cyc:%li", cycle_counter);
+        snprintf(str, sizeof(str), "Cycle:%li", cycle_counter);
         canvas_draw_str(canvas, 0, 62, str);
-        snprintf(str, sizeof(str), "Cell:%i", cells_alive);
-        canvas_draw_str(canvas, 56, 62, str);
+        snprintf(str, sizeof(str), "Cells:%i", cells_alive);
+        canvas_draw_str(canvas, 58, 62, str);
         snprintf(str, sizeof(str), "Spd:%i", speed);
         canvas_draw_str(canvas, 105, 62, str);
     }
